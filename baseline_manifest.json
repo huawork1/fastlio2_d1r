@@ -1,0 +1,170 @@
+{
+  "baseline": "D1R-Liang / normal1500 / auto3m / weak100",
+  "accepted_date": "2026-10-28",
+  "upstream": "liangheming/FASTLIO2_ROS2@7baa59f7339ba88ce3b646fe35b23f61031c5d3f",
+  "scope": "ROS2 source-only upload copy; no bags, maps, binaries, checkpoints or experiment outputs",
+  "configuration_note": "Accepted algorithm parameters are retained; ROS topics and frames are adapted for direct D1R PointCloud2 input. Reliable LiDAR QoS prevents DDS input loss; it does not alter the SLAM algorithm.",
+  "validation": {
+    "colcon_packages": [
+      "interface",
+      "fastlio2",
+      "pgo"
+    ],
+    "x86_64_build": "passed",
+    "no_sensor_launch_smoke": "passed",
+    "indoor_65s_full_frame_regression": "passed_648_pgo_inputs_112_keyframes",
+    "native_indoor_reference": "648_lio_outputs_113_keyframes",
+    "full_600s_regression": "not_run_on_upload_copy",
+    "arm64_validation": "not_run_on_upload_copy"
+  },
+  "files": {
+    "src/fastlio2/CMakeLists.txt": {
+      "sha256": "44639d74d733fb8bc61f7ea4fbfdf5574f4113ab2f54748e3fb8e9e259364f7a",
+      "role": "d1r_ros_integration"
+    },
+    "src/fastlio2/LICENSE": {
+      "sha256": "e4da13b8ee8adf3c184f3cfaa765c1b002efd9e1b7a200fe7c507a30391f8fb9",
+      "role": "upstream_license"
+    },
+    "src/fastlio2/config/lio.yaml": {
+      "sha256": "614e7bde91f9d77a12953bf2a4247f26aff4d57ef30da8f29912377eb9d91ef6",
+      "role": "accepted_parameters_with_d1r_topics_and_frames"
+    },
+    "src/fastlio2/package.xml": {
+      "sha256": "f0039ac7533fa82fc3d45aa4bd76b869eeb7e4bbf60c6d318b6ababd7ff2608a",
+      "role": "ros_package_metadata"
+    },
+    "src/fastlio2/src/lio_node.cpp": {
+      "sha256": "bb65d3a6a0724cdb27b4b97ea21ebd8d646903c5ab853d3983d7832f520ae608",
+      "role": "d1r_ros_integration"
+    },
+    "src/fastlio2/src/map_builder/commons.cpp": {
+      "sha256": "880b37ce80833defbf31d903f245347f029ef5299cd155391e189d644571d2f2",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/commons.h": {
+      "sha256": "066b912b1248ee4e939ccb217addac245da301c58e95180b65109e0495d23b1f",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/ieskf.cpp": {
+      "sha256": "e4de0751080a791d8b7b4335a99a89a15bd508dd546f6e1987fc47917f7e61f5",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/ieskf.h": {
+      "sha256": "7e25e1aacd57b8eb6389aa609c19f826688adf9eba32bfec382687935ff7ce6c",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/ikd_Tree.cpp": {
+      "sha256": "5b68612376de67864994acb13965bc4c4c907810bf514a95039fb315b321ac3d",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/ikd_Tree.h": {
+      "sha256": "67c0546c86f5224e7847098b3ba263a1cc50fc9f95e8e7e7b24d67c58572817a",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/imu_processor.cpp": {
+      "sha256": "d2d880eb40fa6df40662a1fd7146988e16b761b7a518fde5c867c391caa20162",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/imu_processor.h": {
+      "sha256": "2614e92864b6babf6963b7d7898455ed12f04757cfe7103ba17954b4572b49c4",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/lidar_processor.cpp": {
+      "sha256": "617d996ab5af23cc767bad4b6cce79b4462a9c4f36f4ee9e7a21a2eb8dd4e472",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/lidar_processor.h": {
+      "sha256": "cb6a317aa99f6c147cb74d8a40d4596cc15e206613b3224a57f44dfbb9cf3698",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/map_builder.cpp": {
+      "sha256": "8a21fe55ad45d315057fe993ace1367591a6a5a52b2769b86e7ab5f0e1ce6908",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/map_builder.h": {
+      "sha256": "5534c3df46e1176394cbac3795623a328937e0eb631d5b79c0c35ed0b50e48be",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/match_audit.h": {
+      "sha256": "35a6d4704eba9540738bb9f6bc212efde19c7eda7a0adb98492483f5f4ed6cc6",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/map_builder/observation_sampling.h": {
+      "sha256": "4c16d741c3d349f5ad56742d96a55fb985aa82bb03568840fab7611ce112d4a5",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/fastlio2/src/utils.cpp": {
+      "sha256": "10b12821ac233e3dcae76dce9612b011b53913867fce89e74dc2b1bb79ffeb4d",
+      "role": "d1r_ros_integration"
+    },
+    "src/fastlio2/src/utils.h": {
+      "sha256": "b630f7ecd545e48a0bb8486149f5b08310378439c119326d6fe983e8bed137b1",
+      "role": "d1r_ros_integration"
+    },
+    "src/interface/CMakeLists.txt": {
+      "sha256": "dc2c7e6fa183d6cbc51e008caeb90748547763e9b3769116274bc25794320447",
+      "role": "d1r_ros_integration"
+    },
+    "src/interface/LICENSE": {
+      "sha256": "e4da13b8ee8adf3c184f3cfaa765c1b002efd9e1b7a200fe7c507a30391f8fb9",
+      "role": "upstream_license"
+    },
+    "src/interface/package.xml": {
+      "sha256": "0dab9e7d065b922e10c0be16ca6ddd4664c2e0f522ad8aaea37ead685629a0e6",
+      "role": "ros_package_metadata"
+    },
+    "src/interface/srv/SaveMaps.srv": {
+      "sha256": "cec0e110b0b05a06ed7e8f8d6fe03beaf97548ae8f8cdd1290d85d7813b6f794",
+      "role": "d1r_ros_integration"
+    },
+    "src/pgo/CMakeLists.txt": {
+      "sha256": "a22c815b11995914761be7cee7347aaf30e07b36c05e9c1d8cd7afa27e2de806",
+      "role": "d1r_ros_integration"
+    },
+    "src/pgo/LICENSE": {
+      "sha256": "e4da13b8ee8adf3c184f3cfaa765c1b002efd9e1b7a200fe7c507a30391f8fb9",
+      "role": "upstream_license"
+    },
+    "src/pgo/config/pgo.yaml": {
+      "sha256": "a479bd104914149cf43bbd37a0996dbc6458fe2bc15a7383f7262635b2822fc2",
+      "role": "accepted_parameters_with_d1r_topics_and_frames"
+    },
+    "src/pgo/launch/weak100.launch.py": {
+      "sha256": "790e9f17915075c1a30b8047adbcf607215241b350bd95eb4bae7ab36179b238",
+      "role": "new_launch_integration"
+    },
+    "src/pgo/package.xml": {
+      "sha256": "1cd2c54d4f5307221d527a639c4eb8a85a05c2a3dae510c7da4d64cfbd69c81c",
+      "role": "ros_package_metadata"
+    },
+    "src/pgo/rviz/pgo.rviz": {
+      "sha256": "fd4bbdc7bdb552d0649815237715cf160b38e38ae9986b7c90a2509a0fef080e",
+      "role": "d1r_ros_integration"
+    },
+    "src/pgo/src/pgo_node.cpp": {
+      "sha256": "3f70d9613a49c423acd1728bb0c5364f699b0ed905a2ce520f54a63321e10ace",
+      "role": "d1r_ros_integration"
+    },
+    "src/pgo/src/pgos/commons.cpp": {
+      "sha256": "1321ed6c844324b823bf0ed5b44bc3a5fc724511bf1f3442e48759c8b09b2559",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/pgo/src/pgos/commons.h": {
+      "sha256": "6f5bfc29e4a0a195f83b9ed1c158d8651d0c786b393563111213319fe8279294",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/pgo/src/pgos/online_direction.h": {
+      "sha256": "12f26c230a290bd63d2380cf3ceed4ba5db728abb5017114c7da1e3565eddf1b",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/pgo/src/pgos/simple_pgo.cpp": {
+      "sha256": "37bb950b1fa0e9d13a936fd9a6ab2ccac40e8306582d2eb56789321ab2a38493",
+      "role": "accepted_20261028_algorithm"
+    },
+    "src/pgo/src/pgos/simple_pgo.h": {
+      "sha256": "e19e68871f839e4d2d6221493ec6f43f5ec9e58e5754b6bf776801e07b0fd6ae",
+      "role": "accepted_20261028_algorithm"
+    }
+  }
+}

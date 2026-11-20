@@ -1,57 +1,129 @@
-# fastlio2_d1r
+# D1R weak100 SLAM
 
-本代码基于 [liangheming/FASTLIO2_ROS2](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f` 修改而来，适配 Seyond Hummingbird D1-R。上游按 Livox MID360 组织点云、IMU 和回环；这里保留 FAST-LIO2 前端和 `simple_pgo` 后端，按 D1-R 的数据特征和前向视场改了输入、观测选择和回环。
+基于 Liang [`FASTLIO2_ROS2`](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f` 修改，适配 Seyond Hummingbird D1-R。当前算法是 **normal1500、自动 3 m 回环、weak100**。仓库只放 ROS2 编译和运行需要的代码、配置和说明。
 
-源码、配置和回放入口随后再放入本仓库。
+## 功能
 
-## 传感器
+- D1R `/iv_points` PointCloud2 与 `/iv_imu` 直接输入，保留逐点时间用于去畸变；点云默认 reliable QoS，避免大数据帧静默丢失。
+- FAST-LIO2 前端与 42 法向桶的 normal1500 观测选择。
+- 3 m 自动回环搜索、候选失败重试和 D1R 前向视野候选门。
+- weak100 平移弱方向协方差与 iSAM2 位姿图优化。
+- 关键帧地图保存服务及可选 RViz2 显示。
 
-- 雷达：Seyond Hummingbird D1-R，100BASE-TX，默认地址 `172.168.1.10`，端口 `8010`
-- IMU：内置 ICM-45686
-- 名义前向视场：140° × 100°
-- 点云：`/iv_points`（`sensor_msgs/PointCloud2`，带逐点时间戳）
-- IMU：`/iv_imu`（m/s²、rad/s）
-- 外参：旋转 `r_il = diag(1, -1, -1)`；平移 `t_il = [0, 0, 0]` 仍是待标定初值
+## 仓库结构
 
-驱动把点云转到前-左-上。点云和 IMU 的物理轴并不因为相同的 `frame_id` 就已经对齐。
+```text
+src/
+  interface/   ROS2 服务定义
+  fastlio2/    D1R 输入、LIO、normal1500
+  pgo/         自动回环、weak100、PGO
+scripts/
+  run_weak100.sh
+  verify_baseline.py
+docs/BASELINE.md
+baseline_manifest.json
+```
 
-## 相对 MID360 版本的数据改动
+## 依赖
 
-D1-R 是前向雷达，点更集中，点云与 IMU 的封装、单位和时间也和 MID360 不同。针对这些数据特征，输入侧做了这些调整：
+- Ubuntu 22.04、ROS2 Humble
+- C++17、PCL、Eigen3、yaml-cpp、OpenMP
+- Sophus（历史验证环境为 1.22.10）
+- GTSAM（历史验证环境为 4.2.0）
+- 可选 RViz2
 
-- 去掉 Livox 自定义消息。前端直接订阅 `/iv_points` 和 `/iv_imu`，点云类型为 `sensor_msgs/PointCloud2`。
-- 点的 `timestamp` 以秒计，消息头对应扫描开始。进入去畸变前转换成 FastLIO 内部的毫秒相对时间，并保留整帧的扫描终点；抽点只减少点数，不把这一帧的结束时刻提前。
-- IMU 已经是 m/s² 和 rad/s，加速度缩放改为 `imu_acc_scale: 1.0`，不再沿用 Livox 输入里的十倍放大。
-- 点云与 IMU 之间有绕 X 轴 180° 的轴差，外参取 `r_il = diag(1, -1, -1)`。
-- 原始序列先每 3 点取 1，再做 0.12 m 扫描体素；地图体素 0.15 m，距离范围 0.5–50 m。缺少逐点时间、点布局异常，或有效点不足 5 个的扫描直接跳过。
+请确保 Sophus 和 GTSAM 的 CMake 包可通过 `CMAKE_PREFIX_PATH` 找到。
 
-## 算法改动
+## 编译
 
-前向视场里，转向和过门之后，近处的历史表面会很快离开当前观测；大平面又会用大量同向点占满一次更新。原 MID360 流程主要按位置邻近找回环，并用一个 fitness 分数同时约束六个自由度。下面几处是针对这种情况加的。
+在仓库根目录执行。Sophus 和 GTSAM 的 CMake 包要能被找到；本机若装在独立前缀，把它们加进 `CMAKE_PREFIX_PATH`。
 
-### 帧的视野门槛
+```bash
+source /opt/ros/humble/setup.bash
+export CMAKE_PREFIX_PATH=/path/to/sophus:/path/to/gtsam:${CMAKE_PREFIX_PATH:-}
+colcon build --symlink-install --packages-select interface fastlio2 pgo
+source install/setup.bash
+```
 
-回环候选先检查两帧是否真能看到同一片场景。把当前帧变到候选历史雷达坐标后，要求落入历史名义视野的点数比例不低于 0.5，并且两帧前向视轴夹角不超过 90°。两项都通过，才对完整当前帧和历史子图做 ICP；匹配点不裁成预测出来的重叠区域。
+编译产物在 `build/`、`install/`、`log/`，不进入版本库。GTSAM 装在独立前缀时，CMake 通常会把库目录写进 `pgo_node` 的运行路径；若启动仍提示找不到 `libgtsam.so.4`，把该库目录加入 `LD_LIBRARY_PATH`。
 
-名义视野按 140° × 100° 计算。这个门槛只决定候选是否有资格，不代替 ICP。
+## 使用
 
-### 法向均衡
+启动入口只有 `ros2 launch pgo weak100.launch.py`。它同时拉起 LIO 和 PGO，并在节点起来前写入下表。调用前已经导出的同名变量不会被改掉。
 
-点面关联仍用原来的近邻搜索和平面残差。合格观测按平面法向放进 42 个无向桶，`n` 与 `-n` 视为同一方向。每次迭代最多取 1500 个观测：名额在方向之间分配，桶内再照顾空间覆盖。当次滤波更新只用这些观测，单点权重保持原样。
+| 变量 | 缺省 |
+|---|---|
+| `LIO_SAMPLE_MODE` | `normal` |
+| `LIO_SAMPLE_BUDGET` | `1500` |
+| `PGO_RETRY_CANDIDATES` | `1` |
+| `PGO_DIRECTION_MODE` | `weak100` |
+| `PGO_DIRECTION_AUDIT_PATH` | `./weak100_runs/launch_default/direction_audit.jsonl` |
 
-这一步从第一次 LIO 更新就生效。它不改关键帧保存规则，后端拿到的仍是完整点云。
+D1-R 驱动需要发布 `/iv_points`（`sensor_msgs/PointCloud2`，带逐点时间）和 `/iv_imu`（线加速度 m/s²，角速度 rad/s）。点云订阅默认 `lidar_reliable: true`，与当前驱动和示例 bag 的 reliable 发布端一致。发布端是 best-effort 时，把 `src/fastlio2/config/lio.yaml` 里的该项改成 `false`。`t_il = [0, 0, 0]` 是壳内杆臂的零初值，厂家手册没有给出这个距离。
 
-### 后端回环
+### 实车
 
-- 历史关键帧的搜索半径由 1 m 扩大到 3 m，候选仍要求时间间隔大于 60 s。3 m 是位置搜索半径，不是前端近邻半径。
-- 某个候选 ICP 失败后，按距离继续尝试下一个，接受第一个通过的候选。
-- 通过 ICP 的回环按对齐后的点面支撑估计平移各方向的可观测性。支撑不足的方向降低信息权重，其余平移方向和旋转仍沿用原来的 fitness 分数。ICP 给出的相对位姿不变，变的是这条回环在图优化里各方向的权重。
+先编译并 `source install/setup.bash`。启动后保持雷达静止，等 IMU 初始化结束再移动。
 
-数据流是 D1-R 驱动 → FAST-LIO2 → PGO。前端 ikd-Tree 地图和后端关键帧位姿图分开维护，PGO 不把优化结果写回 LIO 状态。
+```bash
+ros2 launch pgo weak100.launch.py
+```
 
-TF：`map → odom → d1r_imu`。`d1r_imu` 是雷达 IMU 坐标系。
+需要画面时加上 RViz。配置在 `src/pgo/rviz/pgo.rviz`。
 
-## 上游
+```bash
+ros2 launch pgo weak100.launch.py rviz:=true
+```
 
-- [liangheming/FASTLIO2_ROS2](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f7339ba88ce3b646fe35b23f61031c5d3f`
-- [Seyond-Inc/seyond_ros_driver](https://github.com/Seyond-Inc/seyond_ros_driver)
+建图结束后保存。`file_path` 必须是已经存在的目录，成功后里面有 `map.pcd`、`poses.txt` 和 `patches/`。
+
+```bash
+mkdir -p /path/to/map
+ros2 service call /pgo/save_maps interface/srv/SaveMaps \
+  "{file_path: /path/to/map, save_patches: true}"
+```
+
+### 回放 bag
+
+另开一个终端，等上面的节点起来后再播放。reliable 点云需要启动发现延时和结束确认，否则首尾帧会丢掉。
+
+```bash
+ros2 bag play /path/to/bag --rate 1 --delay 2 \
+  --wait-for-all-acked 10000 --disable-keyboard-controls
+```
+
+播放结束后等几秒，再调用上面的保存服务。
+
+约 65 秒室内示例的校验、解压和一键脚本见 [`examples/README.md`](examples/README.md)：
+
+```bash
+bash examples/run_example.sh /absolute/path/to/d1r_weak100_indoor_65s
+```
+
+### 单独的输出目录
+
+直接 launch 时，方向审计写在当前目录的 `weak100_runs/launch_default/direction_audit.jsonl`。要按次分目录，并额外记录视野门，用启动脚本。它会建立 `weak100_runs/<时间戳>/`，再启动同一个 launch 文件。
+
+```bash
+bash scripts/run_weak100.sh
+RVIZ=true bash scripts/run_weak100.sh
+OUTPUT_ROOT=/path/to/results bash scripts/run_weak100.sh
+```
+
+数值配置在 `src/fastlio2/config/lio.yaml` 和 `src/pgo/config/pgo.yaml`。
+
+## 源码核对
+
+```bash
+python3 scripts/verify_baseline.py
+```
+
+该命令按 SHA256 核对算法源文件和 D1-R 接入文件。算法说明见 [`docs/BASELINE.md`](docs/BASELINE.md)，编译与运行记录见 [`docs/VALIDATION.md`](docs/VALIDATION.md)。
+
+## 不包含的内容
+
+原始 bag、PCD/地图、checkpoints、实验结果、日志、预编译库、Docker 镜像、厂商 SDK、HBA、localizer、GLIM 和后续运行优化实验均未纳入。原生预编译库回放不在本仓库中；这里提供的是 ROS2 源码构建路径。
+
+## 来源
+
+上游项目：[`liangheming/FASTLIO2_ROS2`](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f7339ba88ce3b646fe35b23f61031c5d3f`。MIT 许可文本保留在各包及根目录；发布前请阅读 `NOTICE.md` 并确认新增修改的版权署名。

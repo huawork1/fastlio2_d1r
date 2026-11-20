@@ -1,0 +1,26 @@
+# ROS2 / colcon
+build/
+install/
+log/
+log_latest/
+
+# Runtime output
+weak100_runs/
+weak100_example_output/
+*.bag
+*.db3
+*.mcap
+*.pcd
+*.ply
+*.bin
+*.jsonl
+ros_logs/
+
+# Python and editor cache
+__pycache__/
+*.py[cod]
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
