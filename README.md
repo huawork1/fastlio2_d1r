@@ -128,6 +128,11 @@ python3 scripts/verify_baseline.py
 
 上游项目：[`liangheming/FASTLIO2_ROS2`](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f7339ba88ce3b646fe35b23f61031c5d3f`。MIT 许可文本保留在各包及根目录；发布前请阅读 `NOTICE.md` 并确认新增修改的版权署名。
 
+## TODO
+
+- 退化检测
+- 退化场景优化
+
 ## Contributors
 
 - Codex
