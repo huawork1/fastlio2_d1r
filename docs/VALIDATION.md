@@ -5,7 +5,6 @@
 - `interface`、`fastlio2`、`pgo` 三个 ROS2 包在隔离的 x86_64 ROS2 Humble 容器中编译成功。
 - `lio_node`、`pgo_node`、launch 和 YAML 配置均正确安装；无传感器启动冒烟通过。
 - `scripts/run_mapping.sh`、`examples/run_example.sh` 通过 Bash 语法检查，Python 文件通过语法检查。
-- `scripts/verify_baseline.py` 按 SHA256 核对算法源文件和 D1-R 接入文件。
 - 上传目录不包含二进制、bag、PCD、构建目录、实验输出或本机绝对路径。
 
 ## 集成修正边界

@@ -19,9 +19,6 @@ src/
   pgo/         自动回环与 PGO
 scripts/
   run_mapping.sh
-  verify_baseline.py
-docs/BASELINE.md
-baseline_manifest.json
 ```
 
 ## 依赖
@@ -111,14 +108,6 @@ OUTPUT_ROOT=/path/to/results bash scripts/run_mapping.sh
 ```
 
 数值配置在 `src/fastlio2/config/lio.yaml` 和 `src/pgo/config/pgo.yaml`。
-
-## 源码核对
-
-```bash
-python3 scripts/verify_baseline.py
-```
-
-该命令按 SHA256 核对算法源文件和 D1-R 接入文件。算法说明见 [`docs/BASELINE.md`](docs/BASELINE.md)，编译与运行记录见 [`docs/VALIDATION.md`](docs/VALIDATION.md)。
 
 ## 不包含的内容
 
