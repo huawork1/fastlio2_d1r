@@ -31,7 +31,7 @@
       "role": "accepted_parameters_with_d1r_topics_and_frames"
     },
     "src/fastlio2/package.xml": {
-      "sha256": "f0039ac7533fa82fc3d45aa4bd76b869eeb7e4bbf60c6d318b6ababd7ff2608a",
+      "sha256": "d950019437759d22c05d26879948f9b4b60da3c678779d7dc833b8b5ff406aae",
       "role": "ros_package_metadata"
     },
     "src/fastlio2/src/lio_node.cpp": {
@@ -130,12 +130,8 @@
       "sha256": "a479bd104914149cf43bbd37a0996dbc6458fe2bc15a7383f7262635b2822fc2",
       "role": "accepted_parameters_with_d1r_topics_and_frames"
     },
-    "src/pgo/launch/weak100.launch.py": {
-      "sha256": "790e9f17915075c1a30b8047adbcf607215241b350bd95eb4bae7ab36179b238",
-      "role": "new_launch_integration"
-    },
     "src/pgo/package.xml": {
-      "sha256": "1cd2c54d4f5307221d527a639c4eb8a85a05c2a3dae510c7da4d64cfbd69c81c",
+      "sha256": "dd33c1dee2eb56697bf9a7877fd467031bd188a15b54ad3e915c578e1abd9e8d",
       "role": "ros_package_metadata"
     },
     "src/pgo/rviz/pgo.rviz": {
@@ -165,6 +161,10 @@
     "src/pgo/src/pgos/simple_pgo.h": {
       "sha256": "e19e68871f839e4d2d6221493ec6f43f5ec9e58e5754b6bf776801e07b0fd6ae",
       "role": "accepted_20261028_algorithm"
+    },
+    "src/pgo/launch/mapping.launch.py": {
+      "sha256": "a7edefbf02ba0da986b5a140d59480517db2b0383af46ddb905d138976df2fab",
+      "role": "new_launch_integration"
     }
   }
 }

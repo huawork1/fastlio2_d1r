@@ -3,7 +3,7 @@
 <package format="3">
   <name>pgo</name>
   <version>0.1.0</version>
-  <description>Automatic 3 m loop closure and weak100 directional covariance PGO.</description>
+  <description>Automatic 3 m loop closure and directional covariance PGO.</description>
   <maintainer email="2605400720@qq.com">zhouzhou</maintainer>
   <license>MIT</license>
 

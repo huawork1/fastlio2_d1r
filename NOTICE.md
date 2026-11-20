@@ -6,9 +6,9 @@ This repository is based on `liangheming/FASTLIO2_ROS2` at commit
 Upstream project: https://github.com/liangheming/FASTLIO2_ROS2
 
 The original MIT license texts are preserved in the ROS2 packages and at the
-repository root. This staging copy adds D1R input/configuration, normal1500
+repository root. This staging copy adds D1R input/configuration, normal-balanced
 observation sampling, automatic 3 m candidate retry and view gating, and the
-weak100 translation-direction covariance model.
+translation-direction covariance model.
 
 Review the upstream attribution and the desired copyright line for the new
 modifications before publishing the repository.

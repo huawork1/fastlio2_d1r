@@ -5,8 +5,8 @@ log/
 log_latest/
 
 # Runtime output
-weak100_runs/
-weak100_example_output/
+mapping_runs/
+example_output/
 *.bag
 *.db3
 *.mcap

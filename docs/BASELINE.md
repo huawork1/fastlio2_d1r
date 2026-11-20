@@ -1,4 +1,4 @@
-# weak100 算法说明
+# 算法说明
 
 版本标识：`D1R-Liang / normal1500 / auto3m / weak100`，认可日期为 2026-10-28。
 
@@ -6,7 +6,7 @@
 
 - **LIO**：保留 FAST-LIO2 的 IMU 传播、逐点去畸变、IESKF、ikd-Tree 和 5NN 点面关联；对有效观测按 42 个无向法向桶均衡选择，每次迭代最多 1500 个观测。
 - **自动回环**：历史关键帧中心搜索半径 3 m，时间间隔大于 60 s；ICP 失败后继续尝试后续候选。D1R 前向候选门使用 140°×100° 名义视场，点数比例至少 0.5，前向视轴夹角不超过 90°。
-- **weak100**：从 ICP 对齐后的局部点面支持构造平移几何矩阵 `Htt`。特征值小于最大特征值 0.1 倍的方向，信息权重乘 0.01，等价于方差乘 100；旋转块和旋转—平移交叉块沿用原模型。
+- **回环平移协方差**：从 ICP 对齐后的局部点面支持构造平移几何矩阵 `Htt`。特征值小于最大特征值 0.1 倍的方向，信息权重乘 0.01，等价于方差乘 100；旋转块和旋转—平移交叉块沿用原模型。
 - **PGO**：起点先验、相邻里程计边和已接受回环边输入 iSAM2；不向 LIO 反馈状态，不重建前端增量树。
 
 运行入口显式设置：
@@ -18,7 +18,7 @@ PGO_RETRY_CANDIDATES=1
 PGO_DIRECTION_MODE=weak100
 ```
 
-`weak100` 模式要求可写的 `PGO_DIRECTION_AUDIT_PATH`。`ros2 launch pgo weak100.launch.py` 在该变量未设置时，把审计文件写到当前目录的 `weak100_runs/launch_default/direction_audit.jsonl`。`scripts/run_weak100.sh` 会为每次运行创建独立目录并改指向那里。
+`PGO_DIRECTION_MODE=weak100` 要求可写的 `PGO_DIRECTION_AUDIT_PATH`。`ros2 launch pgo mapping.launch.py` 在该变量未设置时，把审计文件写到当前目录的 `mapping_runs/launch_default/direction_audit.jsonl`。`scripts/run_mapping.sh` 会为每次运行创建独立目录并改指向那里。
 
 ## 已验证结果
 

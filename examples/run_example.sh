@@ -12,13 +12,13 @@ repo_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 bag_path=$1
 [[ -f "$bag_path/metadata.yaml" ]] || { echo "Missing $bag_path/metadata.yaml" >&2; exit 2; }
 
-output_root=${OUTPUT_ROOT:-"$PWD/weak100_example_output"}
+output_root=${OUTPUT_ROOT:-"$PWD/example_output"}
 output_dir="$output_root/$(date +%Y%m%d_%H%M%S)"
 [[ ! -e "$output_dir" ]] || { echo "Output already exists: $output_dir" >&2; exit 2; }
 map_dir="$output_dir/map"
 mkdir -p "$map_dir"
 
-OUTPUT_ROOT="$output_dir/slam" RVIZ="${RVIZ:-false}" bash "$repo_dir/scripts/run_weak100.sh" \
+OUTPUT_ROOT="$output_dir/slam" RVIZ="${RVIZ:-false}" bash "$repo_dir/scripts/run_mapping.sh" \
   > "$output_dir/launch_console.log" 2>&1 &
 launch_pid=$!
 cleanup() {

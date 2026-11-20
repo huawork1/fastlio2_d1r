@@ -3,7 +3,7 @@
 <package format="3">
   <name>fastlio2</name>
   <version>0.1.0</version>
-  <description>D1R FAST-LIO2 frontend with normal1500 observation sampling.</description>
+  <description>D1R FAST-LIO2 frontend with normal-balanced observation sampling.</description>
   <maintainer email="zhouzhou@todo.todo">zhouzhou</maintainer>
   <license>MIT</license>
 

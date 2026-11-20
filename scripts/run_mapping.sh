@@ -4,14 +4,14 @@ set -euo pipefail
 : "${ROS_DISTRO:?Source ROS2 and this workspace install/setup.bash first.}"
 command -v ros2 >/dev/null || { echo "Missing ros2 command." >&2; exit 2; }
 
-output_root=${OUTPUT_ROOT:-"$PWD/weak100_runs"}
+output_root=${OUTPUT_ROOT:-"$PWD/mapping_runs"}
 stamp=$(date +%Y%m%d_%H%M%S)
 output_dir="$output_root/$stamp"
 mkdir -p "$output_dir/ros_logs"
 
-# weak100.launch.py supplies these when unset. Export them here so this
-# run keeps normal1500, candidate retry, and weak100, and so the audit
-# file stays inside this run directory.
+# mapping.launch.py supplies these when unset. Export them here so this
+# run keeps the sampling mode, candidate retry, and direction mode, and
+# so the audit file stays inside this run directory.
 export LIO_SAMPLE_MODE=normal
 export LIO_SAMPLE_BUDGET=1500
 export PGO_RETRY_CANDIDATES=1
@@ -24,5 +24,5 @@ export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
 export PYTHONDONTWRITEBYTECODE=1
 
-printf 'weak100 output: %s\n' "$output_dir"
-exec ros2 launch pgo weak100.launch.py "rviz:=${RVIZ:-false}"
+printf 'mapping output: %s\n' "$output_dir"
+exec ros2 launch pgo mapping.launch.py "rviz:=${RVIZ:-false}"

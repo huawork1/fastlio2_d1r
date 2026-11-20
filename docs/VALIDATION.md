@@ -4,7 +4,7 @@
 
 - `interface`、`fastlio2`、`pgo` 三个 ROS2 包在隔离的 x86_64 ROS2 Humble 容器中编译成功。
 - `lio_node`、`pgo_node`、launch 和 YAML 配置均正确安装；无传感器启动冒烟通过。
-- `scripts/run_weak100.sh`、`examples/run_example.sh` 通过 Bash 语法检查，Python 文件通过语法检查。
+- `scripts/run_mapping.sh`、`examples/run_example.sh` 通过 Bash 语法检查，Python 文件通过语法检查。
 - `scripts/verify_baseline.py` 按 SHA256 核对算法源文件和 D1-R 接入文件。
 - 上传目录不包含二进制、bag、PCD、构建目录、实验输出或本机绝对路径。
 
@@ -14,7 +14,7 @@
 - `interface` 仅保留 PGO 实际使用的 `SaveMaps.srv`。
 - D1R 点云订阅默认使用 reliable QoS，队列深度 100；best-effort 驱动可在 `lio.yaml` 中显式设置 `lidar_reliable: false`。
 - 示例播放增加 2 秒启动发现延时和结束 ACK 等待，避免首帧发现竞态及末帧发布确认缺失。
-- normal1500、IEKF、关键帧阈值、3 m 回环、weak100 及其他建图算法参数均未改变。
+- 法向均衡采样、IEKF、关键帧阈值、3 m 回环、平移弱方向协方差及其他建图算法参数均未改变。
 
 ## 室内示例数据完整性
 
@@ -34,13 +34,13 @@
 |---|---:|---:|---:|
 | 修复前 ROS2 best-effort | 186 组 PGO 输入 | 69 | 995703 |
 | 修复后正式 ROS2 上传副本 | 648 组 PGO 输入，648 组全部处理， backlog=0 | 112 | 1618233 |
-| 原生 weak100 参照 | 650 帧读取、648 次 LIO 输出 | 113 | 1632526 |
+| 原生回放参照 | 650 帧读取、648 次 LIO 输出 | 113 | 1632526 |
 
 正式 ROS2 验收使用 reliable 点云订阅、2 秒发现延时和 10 秒结束 ACK 等待；前两个 LIO 处理周期用于初始化，因此 650 帧输入对应 648 组建图输出。
 
 ## 地图几何一致性
 
-修复后的正式 ROS2 地图与原生 weak100 地图墙面和轮廓一致。对两份 PCD 各确定性随机抽取 60000 点，进行双向最近邻比较，共 120000 个距离样本：
+修复后的正式 ROS2 地图与原生回放地图的墙面和轮廓一致。对两份 PCD 各确定性随机抽取 60000 点，进行双向最近邻比较，共 120000 个距离样本：
 
 - 中位数：约 8.73 mm。
 - P95：约 24.23 mm。

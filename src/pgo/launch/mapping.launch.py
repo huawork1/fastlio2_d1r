@@ -29,7 +29,7 @@ def apply_algorithm_defaults(context):
 
     audit = os.environ.get("PGO_DIRECTION_AUDIT_PATH")
     if not audit:
-        audit_dir = Path.cwd() / "weak100_runs" / "launch_default"
+        audit_dir = Path.cwd() / "mapping_runs" / "launch_default"
         audit_dir.mkdir(parents=True, exist_ok=True)
         audit = str(audit_dir / "direction_audit.jsonl")
         actions.append(SetEnvironmentVariable("PGO_DIRECTION_AUDIT_PATH", audit))
