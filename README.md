@@ -2,7 +2,7 @@
 
 基于 Liang [`FASTLIO2_ROS2`](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f` 修改，适配 Seyond Hummingbird D1-R。前端按 42 个法向桶均衡采样，每次迭代最多 1500 个观测；后端做 3 m 自动回环，并把回环平移的弱方向协方差交给 iSAM2。仓库只放 ROS2 编译和运行需要的代码、配置和说明。
 
-## 功能
+## 特点
 
 - D1R `/iv_points` PointCloud2 与 `/iv_imu` 直接输入，保留逐点时间用于去畸变；点云默认 reliable QoS，避免大数据帧静默丢失。
 - FAST-LIO2 前端按 42 个法向桶均衡选择观测，每次迭代最多 1500 个。
@@ -127,3 +127,11 @@ python3 scripts/verify_baseline.py
 ## 来源
 
 上游项目：[`liangheming/FASTLIO2_ROS2`](https://github.com/liangheming/FASTLIO2_ROS2) @ `7baa59f7339ba88ce3b646fe35b23f61031c5d3f`。MIT 许可文本保留在各包及根目录；发布前请阅读 `NOTICE.md` 并确认新增修改的版权署名。
+
+## Contributors
+
+- Codex
+- Cursor
+- Gemini
+- DeepSeek
+- Doubao
